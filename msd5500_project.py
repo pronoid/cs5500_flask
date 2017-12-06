@@ -85,16 +85,17 @@ def get_one_user(current_user, public_id):
 
 
 @app.route('/user', methods=['POST'])
-def create_user():
+@token_required
+def create_user(current_user):
 
-    # if not current_user.admin:
-    #     return jsonify({'message': 'Cannot perform that function!'})
+    if not current_user.admin:
+        return jsonify({'message': 'Cannot perform that function!'})
 
     data = request.get_json()
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
-    new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=True)
+    new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
 
@@ -216,7 +217,6 @@ def update_pet(current_user, pet_id):
     pet = Pet.query.filter_by(id=pet_id, owner_id=current_user.id).first()
     if not pet:
         return jsonify({'message': "No Pet found"})
-
 
     new_name = json.loads(request.data)
     pet.name = new_name.get('name')
