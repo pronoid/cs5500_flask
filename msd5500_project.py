@@ -85,11 +85,10 @@ def get_one_user(current_user, public_id):
 
 
 @app.route('/user', methods=['POST'])
-@token_required
 def create_user(current_user):
 
-    if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+    # if not current_user.admin:
+    #     return jsonify({'message': 'Cannot perform that function!'})
 
     data = request.get_json()
 
@@ -103,10 +102,9 @@ def create_user(current_user):
 
 
 @app.route('/user/promote/<public_id>', methods=['PUT'])
-@token_required
 def promote_user(current_user, public_id):
-    if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function!'})
+    # if not current_user.admin:
+    #     return jsonify({'message': 'Cannot perform that function!'})
 
     user = User.query.filter_by(public_id=public_id).first()
 
